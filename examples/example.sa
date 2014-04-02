@@ -3,11 +3,13 @@ directive progressBar for application {
 	import 	 /* none */;
 	byref    value;
 	byval    color, max;
-	callback onTransitionStart; 
+	callback /* node */; 
 
 	template `
-.ui.progress.active(ng-class='[visibility, color]')
-  .bar(style='{{bsize}}')
+div 
+  link(rel="stylesheet", type="text/css", href="//cdnjs.cloudflare.com/ajax/libs/semantic-ui/0.13.0/css/semantic.css")
+  .ui.progress.transition.active(ng-class='[visibility, color]')
+      .bar(style='{{bsize}}')
 `;
 
 	create(elem, attr) {
@@ -22,11 +24,12 @@ directive progressBar for application {
 			} else {
 				@visibility = 'hidden';
 			}
+			@onValueChange();
 		}
 
 		@onValueChange = λ => { 
 			var perc;
-			perc = @value/parseFloat(@max)*@elem.width();
+			perc = @value/parseFloat(@max)*window.jQuery(@elem).width();
 			@bsize = "width: "+perc+"px;"
 		}
 
@@ -34,6 +37,10 @@ directive progressBar for application {
 
 	}
 
+};
+
+window.$$$ = function(el) {
+	return angular.element(document.querySelector(el)).isolateScope();
 }
 
 init;
