@@ -55,7 +55,7 @@
     err("Source .sa file has'nt been specified on the command line");
     return;
   }
-  shelljs.exec(src + "/node_modules/.bin/sjs -m " + src + "/sweet-angle.sjs -m lambda-chop/macros " + file + " -r", function(code, output){
+  shelljs.exec(src + "/node_modules/.bin/sjs -m " + src + "/sweet-angle.sjs -m " + src + "/node_modules/lambda-chop/macros " + file + " -r", function(code, output){
     if (code) {
       return code;
     }
