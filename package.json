@@ -1,0 +1,41 @@
+{
+  "name": "sweet-angle",
+  "version": "0.0.1",
+  "description": "Write angularjs directives with ease",
+  "main": "index.js",
+  "bin": {
+    "sweet-angle": "./compile.js"
+  },
+  "dependencies": {
+    "express": "~3.1.0",
+    "group-by": "~0.0.1",
+    "moment": "~1.7.2",
+    "optimist": "~0.3.5",
+    "stringsim": "~0.0.1",
+    "underscore": "~1.4.3",
+    "underscore.string": "~2.3.1",
+    "ansi-color": "*",
+    "ansi-color-table": "*",
+    "shelljs": "*",
+    "lambda-chop": "^0.1.4",
+    "sweet.js": "^0.5.0"
+  },
+  "contributors": [
+    {
+      "name": "Vittorio Zaccaria",
+      "email": "vittorio.zaccaria@gmail.com"
+    }
+  ],
+  "homepage": "http://www.vittoriozaccaria.net",
+  "devDependencies": {},
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/vzaccaria/sweet-angle.git"
+  },
+  "author": "Vittorio Zaccaria",
+  "license": "MIT",
+  "engines": {
+    "node": "0.10.13",
+    "npm": "1.1.62"
+  }
+}

@@ -1,0 +1,39 @@
+
+directive progressBar for application {
+	import 	 /* none */;
+	byref    value;
+	byval    color, max;
+	callback onTransitionStart; 
+
+	template `
+.ui.progress.active(ng-class='[visibility, color]')
+  .bar(style='{{bsize}}')
+`;
+
+	create(elem, attr) {
+		@visibility = 'hidden';
+
+		@elem = elem;
+
+		@toggle = λ => { 
+
+			if(@visibility === 'hidden') {
+				@visibility = '';
+			} else {
+				@visibility = 'hidden';
+			}
+		}
+
+		@onValueChange = λ => { 
+			var perc;
+			perc = @value/parseFloat(@max)*@elem.width();
+			@bsize = "width: "+perc+"px;"
+		}
+
+		@$watch('value', @onValueChange);
+
+	}
+
+}
+
+init;
