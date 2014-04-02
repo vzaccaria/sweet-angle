@@ -1,0 +1,39 @@
+<!doctype html>
+<html class="no-js">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title></title>
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/angular.js/1.2.15/angular.min.js"></script>
+    <script type="text/javascript" src="//ajax.aspnetcdn.com/ajax/jQuery/jquery-1.11.0.min.js"></script>
+</head>
+
+<body ng-app="application">
+
+    <script type="text/javascript">
+    angular.module('application', []).controller('myCtrl', 
+        function($scope) {
+        	$scope.statusToBeShown = 10;
+        	$scope.show = function() {
+        		$$$('#pb').toggle();
+        	}
+        }
+    )
+    </script>
+    <div ng-controller='myCtrl'>
+        <input type="text" ng-model="statusToBeShown" />
+        <button ng-click='show()'>Toggle</button>
+        <div>
+            <h1>Example progress bar</h1>
+            <div id='pb' progress-bar value='statusToBeShown' color='blue' max='100'></div>
+
+        </div>
+    </div>
+
+</body>
+    <script type="text/javascript" src="example.js"></script>
+
+</html>
