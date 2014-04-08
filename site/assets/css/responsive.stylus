@@ -1,0 +1,96 @@
+@import '../bower_components/nib'
+@import 'responsive-lib'
+@import 'baseline'
+@import 'fonts'
+
+reset-fonts()
+
+paragraph(paragraph-size)
+	& p, & ul
+		one-column-with-gutter(paragraph-size)
+		open-sans-font()
+		code 
+				hea12()
+				inconsolata-font()	
+				background-color: darken(white, 10%)
+
+heading(paragraph-size, size)
+		hea{size}()
+		one-column-with-gutter(paragraph-size)
+		text-align: center
+		smallcaps()
+
+title(paragraph-size, size)
+	h1 
+		heading(paragraph-size, size)
+
+subtitle(paragraph-size, size)
+	h2 
+		margin-top: 24px !important
+		heading(paragraph-size, size)
+
+logo(width, topmargin)
+	.logo
+		margin-top: topmargin
+		one-column-with-gutter(width)	
+
+codespace(paragraph-size, size, draw-border=true)
+		pre 
+			/* Otherwise screws up baseline: */
+			one-column-with-gutter(paragraph-size)
+			if draw-border
+				display: block
+				margin-top: 0 !important 
+				padding-left: 0.5em !important
+				border-radius: 0
+			code 
+				hea{size}()
+				inconsolata-font()	
+
+pc-rel-size=60%
+tab-rel-size=90%
+mob-rel-size=90%
+
+
+
+.content
+	
+	background-color : white
+	overflow         : auto;
+
+	h1, h2
+		lato-font()
+
+
+	+on-pc()
+		wrapper(70%)
+		logo(40%, 8em)
+		title(pc-rel-size, '20')
+		subtitle(pc-rel-size, '18')
+		paragraph(pc-rel-size)	
+		codespace(pc-rel-size, 12)
+
+			
+	+on-tablet()
+		wrapper(90%)
+		title(tab-rel-size, '18')
+		subtitle(tab-rel-size, '16')
+		logo(tab-rel-size, 4em)
+		paragraph(tab-rel-size)	
+		codespace(tab-rel-size, 12)
+
+
+	+on-mobile()
+		wrapper(100%)
+		paragraph(mob-rel-size)	
+		title(mob-rel-size, '18')
+		subtitle(mob-rel-size, '16')	
+		logo(mob-rel-size, 2em)
+		codespace(100%,12,false)
+
+
+			
+
+
+
+setup-background-gradient()

@@ -1,0 +1,265 @@
+
+
+doctype html
+html(class="no-js")
+    head
+        //- TODO: Check if it's the good charset
+        meta(charset='utf-8')
+        meta(http-equiv='X-UA-Compatible', content='IE=edge')
+        title
+        meta(name='description', content='')
+        meta(name='viewport', content='width=device-width, initial-scale=1')
+        link(rel="stylesheet", type="text/css", href="css/responsive.css")
+        link(rel="stylesheet", type="text/css", href="//highlightjs.org/static/styles/obsidian.css")
+        link(href='http://fonts.googleapis.com/css?family=Lato:300', rel='stylesheet', type='text/css')
+        link(href='http://fonts.googleapis.com/css?family=Open+Sans:400italic,700italic,400,700', rel='stylesheet', type='text/css')
+        link(href='http://fonts.googleapis.com/css?family=Inconsolata', rel='stylesheet', type='text/css')
+
+    body
+        //-
+            Add your site or application content here
+        .content 
+           img.logo(src="img/logo.png", alt="")
+           :markdown
+                # write your angular directives with ease 
+                Sweet Angle is an opinionated source to source compiler that
+                allows you to write AngularJS directives with a very concise syntax and convert them
+                to vanilla JS.
+
+                It is based on macro expansion and covers the majority of the cases in which you may 
+                need a directive. 
+
+                ## Installation 
+
+                ```
+                $ npm install sweet-angle
+                ```
+
+                ## Usage 
+
+                ```
+                $ sweet-angle directive.sa > directive.js
+                ```
+
+                ## The syntax
+
+                Let's assume we want to write a directive for a progress bar: 
+
+                ```
+                <div id='pb' progress-bar value='statusToBeShown' color='blue' max='100'></div>
+                ```
+
+                The directive 
+                has two attributes passed by value (`color, max`) and one passed by reference (`value`):
+                
+                * `value` represents the current percentage to be shown on the progress bar.
+                * `color` represents the name of the class to be used for coloring the bar.
+                * `max` represents the maximum value that `value` can assume.
+
+                Let's write the beginning of the directive in Sweet Angle:
+
+
+                ```
+                directive progressBar for application {
+                 import                 /* none */;
+                 byref    value;        /* two-way angularjs bind */
+                 byval    color, max;   /* one-way angularjs bind */
+                 callback               /* none */; 
+                 ...
+                ```  
+
+                Here, the `import` clause does not import anything but it could be
+                used to import other angular modules (e.g., `import $q, $restangular;`).
+
+                The `byref` clause is used to create a local scope variable that mirrors 
+                another one in the parent scopes (uses Angular's scope qualifier 
+                '`=`' internally).
+
+                The `byval` clause is used to create a one way bind, from parent scope(s)
+                to the local one (uses Angular's scope qualifier 
+                '`@`' internally). 
+
+                `callback` can be used to pass one or many callbacks to the directive (uses Angular's scope qualifier 
+                '`&`' internally)
+
+
+                Next we specify the template by using Jade's syntax: 
+
+                ```
+                 template `
+                div 
+                 .ui.progress.transition.active(ng-class='[visibility, color]')
+                   .bar(style='{{bsize}}')
+                `;
+                ```
+                
+                Note two additional scope variables used here: `visibility` and `bsize`.
+
+                Now we need to define is the `create` method. 
+                This is converted by Sweet Angle into the directive's `link` function 
+                with some desugaring:
+
+                * `create` is invoked having `this` mapped to `$scope`.
+                * `@` can be used as an alias `this`.
+
+                First, let's save the parameter `elem` into the local scope, for convenience:
+
+                ```
+                 create(elem, attr) {
+                   @elem = elem;
+                   ...
+                ```
+
+                Let's start by making the progress bar invisible:
+
+                ```
+                   ...
+                   @visibility = 'hidden';
+                   ...
+                ```
+
+                and define a function that enables us to toggle the 
+                visibility of the bar:
+
+                ```
+                   ...
+                   @toggle = function() { 
+                     if(@visibility === 'hidden') {
+                      @visibility = '';
+                     } else {
+                      @visibility = 'hidden';
+                     }
+                   }
+                   ...
+                ```
+
+                Now, we need to take care of the changes to `$scope.value` (or `@value`) to visually
+                update the bar. First
+                we define an event listener that updates `$scope.bsize` with the new bar size:
+
+                ```
+                   @onValueChange = function() { 
+                     var perc;
+                     perc = @value/parseFloat(@max)*window.jQuery(@elem).width();
+                     @bsize = "width: "+perc+"px;"
+                   }
+                ```
+
+                and, second, we register the event listener on any change to `value`.
+
+                ```
+                   ...
+                   @$watch('value', @onValueChange);
+
+                    } /* ends create */
+                }; /* ends the directive */
+                   ...
+                ```
+
+                ## Result 
+
+                The complete directive is here:
+                ```
+                directive progressBar for application {
+                 import   /* none */;
+                 byref    value;
+                 byval    color, max;
+                 callback /* none */; 
+
+                 template `
+                div 
+                 .ui.progress.transition.active(ng-class='[visibility, color]')
+                   .bar(style='{{bsize}}')
+                `;
+
+                 create(elem, attr) {
+                   @visibility = 'hidden';
+                   @elem = elem;
+
+                   @toggle = function() { 
+                     if(@visibility === 'hidden') {
+                      @visibility = '';
+                     } else {
+                      @visibility = 'hidden';
+                     }
+                     @onValueChange();
+                   }
+
+                   @onValueChange = function() { 
+                     var perc;
+                     perc = @value/parseFloat(@max)*window.jQuery(@elem).width();
+                     @bsize = "width: "+perc+"px;"
+                   }
+
+                   @$watch('value', @onValueChange);
+
+                 } /* ends create */
+
+                };
+                ```
+
+                And the conversion to vanilla JS is here:
+
+                ```
+                angular.module('application').directive('progressBar', function () {
+                    console.log(arguments);
+                    var ret = {};
+                    ret.restrict = 'A';
+                    ret.template = '<div><div ng-class="[visibility, color]" class="ui progress transition active"><div style="{{bsize}}" class="bar"></div></div></div>';
+                    ret.replace = true;
+                    ret.scope = {};
+                    ret.scope.value = '=';
+                    ret.scope.color = '@';
+                    ret.scope.max = '@';
+                    ret.link = function (s) {
+                        (function (elem, attr) {
+                            this.visibility = 'hidden';
+                            this.elem = elem;
+                            this.toggle = function () {
+                                if (this.visibility === 'hidden') {
+                                    this.visibility = '';
+                                } else {
+                                    this.visibility = 'hidden';
+                                }
+                                this.onValueChange();
+                            };
+                            this.onValueChange = function () {
+                                var perc;
+                                perc = this.value / parseFloat(this.max) * window.jQuery(this.elem).width();
+                                this.bsize = 'width: ' + perc + 'px;';
+                            };
+                            this.$watch('value', this.onValueChange);
+                        }.apply(s, Array.prototype.slice.call(arguments, 1)));
+                    };
+                    return ret;
+                });
+                ```
+
+                ## Accessing the directive scope 
+
+                To get to the isolated scope of the directives created, you can use the following 
+                helper:
+
+                ```
+                window.$$ = function(sel) {
+                                return angular.element(document.querySelector(sel)).isolateScope();
+                        }
+                ```    
+
+                So, for example, you can toggle the progress bar visibility by using:
+
+                ```
+                    $$('#pb').toggle()
+                ```
+
+
+    
+
+        block bottom-script
+            script(src='//ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js')
+            script(src='//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.0/highlight.min.js')
+            script.
+                hljs.initHighlightingOnLoad();
+            script.
+                window.jQuery || document.write('<script src="js/vendor/<jquery-1 class="11 0"></jquery-1>.min.js"><\/script>')
+
