@@ -56,11 +56,13 @@ let init = macro {
 	case { _ } => {
 		return #{
 			window.$$ = function(sel) {
-				return angular.element(sel).scope();
+				return angular.element(document.querySelector(sel)).isolateScope();
 			}
 		}
 	}
 }
+
+
 
 let  ~ = macro {
 	case { _ $x } => {
