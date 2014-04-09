@@ -18,7 +18,7 @@ gulp.task 'build-stylus', ->
         .pipe gulp.dest '_site/css'
 
 gulp.task 'build-img', ->
-    gulp.src ['assets/img/*.png']
+    gulp.src ['assets/img/*.png', 'assets/img/*.jpg']
         .pipe gulp.dest '_site/img'
 
 gulp.task 'default', ['build-html' 'build-vendor-js', 'build-stylus', 'build-img']
