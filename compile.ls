@@ -53,6 +53,8 @@ require! 'optimist'
 argv     = optimist.usage(usage-string,
               help:
                 alias: 'h', description: 'this help', default: false
+              application:
+                alias: 'a', description: 'application module name', default: 'application'
 
                          ).boolean(\h).argv
 
@@ -67,6 +69,26 @@ if not file?
   err "Source .sa file has'nt been specified on the command line"
   return 
 
-shelljs.exec "#src/node_modules/.bin/sjs -m #src/sweet-angle.sjs -m #src/node_modules/lambda-chop/macros #file -r", (code, output) ->
-  if code 
-    return code
+modules = [ "#src/sweet-angle.sjs"
+            "#src/node_modules/lambda-chop/macros"
+            ]
+
+compile-sweet = (fl) ->
+
+  sweet = require('sweet.js');
+  mods  = [ sweet.loadNodeModule(cwd, m) for m in modules ]
+
+  out = sweet.compile fl, { modules: mods, readable-names: true }
+
+  console.log out.code
+
+root.sa = {}
+root.sa.application = argv.application
+
+file-contents = shelljs.cat(file)
+compile-sweet(file-contents)
+
+
+# shelljs.exec "#src/node_modules/.bin/sjs -m #src/sweet-angle.sjs -m #src/node_modules/lambda-chop/macros #file -r", (code, output) ->
+#   if code 
+#     return code

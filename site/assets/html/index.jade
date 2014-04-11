@@ -22,9 +22,9 @@ html(class="no-js")
 
            :markdown
                 # write your angular directives with ease 
-                Sweet Angle is an opinionated source to source compiler that
+                Sweet Angle is an opinionated source to source translator that
                 allows you to write AngularJS directives with a very concise syntax and convert them
-                to vanilla JS.
+                to vanilla JS. I use it for myself and find it very useful so I am sharing it on the net.
 
                 It is based on macro expansion and covers the majority of the cases in which you may 
                 need a directive. 
@@ -252,12 +252,15 @@ html(class="no-js")
                     $$('#pb').toggle()
                 ```
 
+                ## [Fork it on Git-hub](https://github.com/vzaccaria/sweet-angle)
+
+
         .end
             .overlay        
                 :markdown 
-                    Written by Vittorio Zaccaria 
+                    Written by [Vittorio Zaccaria](http://www.vittoriozaccaria.net)
                     
-                    Inspired by ...
+                    Inspired by [Aaron Powell Sweetjs Macros](https://gist.github.com/aaronpowell)
 
                     Footnote background image by [Davide Ragusa](http://www.flickr.com/davideragusa)
 
@@ -269,4 +272,8 @@ html(class="no-js")
                 hljs.initHighlightingOnLoad();
             script.
                 window.jQuery || document.write('<script src="js/vendor/<jquery-1 class="11 0"></jquery-1>.min.js"><\/script>')
+            script(src="http://www.google-analytics.com/urchin.js", type="text/javascript")
+            script. 
+                _uacct = "UA-4069654-2"; 
+                urchinTracker(); 
 

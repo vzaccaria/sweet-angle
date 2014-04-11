@@ -3,24 +3,23 @@
 /* Overall framework is from: https://gist.github.com/aaronpowell/9085724 */
 let directive = macro {
 	case {_
-		  $name for $app {
-		 	import   $($iparams)  (,) ...;
-		 	byref    $($attrib)   (,) ...;
-		 	byval    $($ex)       (,) ...;
-		 	callback $($cb)       (,) ...;
-		 	template $template;
-			create ($($mparams) (,) ...) $mbody
+		  $name {
+                       import   $($iparams)  (,) ...;
+                       byref    $($attrib)   (,) ...;
+                       byval    $($ex)       (,) ...;
+                       callback $($cb)       (,) ...;
+                       template $template;
+                       create ($($mparams) (,) ...) $mbody
 		 }
 	} => {
 		// From: https://github.com/mozilla/sweet.js/issues/178
-
 		var temp         = #{$template}[0];
 		var tempString   = temp.token.value.raw;
 		var jade         = require('jade');
 		var rendered     = jade.render(tempString);
 		letstx $newTemp  = [makeValue(rendered, #{here})];
 		letstx $name_str = [makeValue(unwrapSyntax(#{$name}), #{here})];
-		letstx $app_str  = [makeValue(unwrapSyntax(#{$app}), #{here})];
+		letstx $app_str  = [makeValue(root.sa.application, #{here})];
 	
 		return #{
 			angular.module($app_str).directive($name_str, function ($($iparams) (,) ...) {

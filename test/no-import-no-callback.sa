@@ -38,9 +38,3 @@ div
 	}
 
 };
-
-window.$$$ = function(el) {
-	return angular.element(document.querySelector(el)).isolateScope();
-}
-
-init;

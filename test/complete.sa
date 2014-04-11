@@ -1,0 +1,12 @@
+
+directive xy {
+	import a, b;
+	byref c,d;
+	byval e,f;
+	callback g,h;
+
+	template `div`;
+
+	create(e,a) { }
+};
+

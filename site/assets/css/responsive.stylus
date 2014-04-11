@@ -42,6 +42,8 @@ codespace(paragraph-size, size, draw-border=true)
 			code 
 				hea{size}()
 				inconsolata-font()	
+				whitespace: pre-wrap
+				overflow: scroll
 
 pc-rel-size=60%
 tab-rel-size=90%
@@ -67,9 +69,7 @@ body
 		subtitle(pc-rel-size, '18')
 		paragraph(pc-rel-size)	
 		codespace(pc-rel-size, 12)
-	.footnote
-		wrapper(70%)
-		paragraph(pc-rel-size)	
+
 
 		
 +on-tablet()
@@ -80,9 +80,7 @@ body
 		logo(tab-rel-size, 4em)
 		paragraph(tab-rel-size)	
 		codespace(tab-rel-size, 12)
-	.footnote
-		wrapper(90%)
-		paragraph(tab-rel-size)	
+
 
 +on-mobile()
 	.content
@@ -92,9 +90,6 @@ body
 		subtitle(mob-rel-size, '16')	
 		logo(mob-rel-size, 2em)
 		codespace(100%,12,false)
-	.footnote
-		wrapper(100%)
-		paragraph(tab-rel-size)	
 
 
 
