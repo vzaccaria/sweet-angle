@@ -71,7 +71,7 @@ let  ~ = macro {
 	}
 }
 
-export init
+export sweetInit
 export @
 export ~ 
 export directive
