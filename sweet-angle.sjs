@@ -51,7 +51,7 @@ macro @ {
 	case { _ $x } => { return #{ this.$x }; }
 }
 
-let init = macro {
+let sweetInit = macro {
 	case { _ } => {
 		return #{
 			window.$$ = function(sel) {
