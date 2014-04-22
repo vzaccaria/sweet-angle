@@ -30,7 +30,7 @@ body {
 	box-sizing: border-box;
 	.rounded(3px);
 	background-color: fade(white, 90%);
-	-dyn-background-color: on-scroll-of 'window' execute '"black"';
+	-dyn-opacity: on-scroll-of 'window' execute 'zeroFrom(windowTop, 100)';
 	padding: 2em;
 }
 
@@ -81,6 +81,6 @@ body {
 }
 
 body {
-	-dyn-background-color: on-scroll-of 'window' execute '"black"';
+	// -dyn-background-color: on-scroll-of 'window' execute '"black"';
 }
 

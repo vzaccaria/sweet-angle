@@ -36,6 +36,13 @@ get-scroll-expression = (d) ->
             return { property: property, trigger: results[1], expression: results[2] }
     return undefined
 
+sat = (x) ->
+    | x>1 => 1
+    | x<0 => 0
+    | otherwise => x 
+
+zero-from = (value, thres) ->
+    sat((thres - value)/thres)
 
 build-handlers = (rules, sheet) ->
    for rule in rules 
@@ -52,9 +59,12 @@ build-handlers = (rules, sheet) ->
                             let i = index, fun = handler, pro = _.str.camelize(property), s = sel
                                 (e) -> 
                                     el = e.target
-                                    scope = { top: $(el).scrollTop(), left: $(el).scrollLeft() }
-                                    get-css-rules(sheet)[i].style[pro] = "black"
-                                    # get-css-rules(sheet)[i].style[pro] = fun.eval()
+                                    scope = { 
+                                        windowTop: $(el).scrollTop()
+                                        windowLeft: $(el).scrollLeft()
+                                        zero-from: zero-from
+                                        }
+                                    get-css-rules(sheet)[i].style[pro] = fun.eval(scope)
                                     next(e) if next?
 
 
