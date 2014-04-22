@@ -1,9 +1,8 @@
 
 css-parse = require('css-parse')
-window.mathjs = require('mathjs')()
 
 scroll-handlers = {}
-sheets = []
+sheets          = []
 
 # From http://davidwalsh.name/add-rules-stylesheets
 
@@ -32,8 +31,8 @@ add-css-rule = (sheet, selector, rules, index) ->
 get-scroll-expression = (d) ->
     if (results = d.property is /\-dyn\-(.*)/)?
         property = results[1]
-        if (results = d.value is /on\-scroll-of '(.*)' execute '(.*)'/)?
-            return { property: property, trigger: results[1], expression: results[2] }
+        if (results = d.value is /on\-scroll '(.*)'/)?
+            return { property: property, expression: results[1] }
     return undefined
 
 sat = (x) ->
@@ -41,8 +40,28 @@ sat = (x) ->
     | x<0 => 0
     | otherwise => x 
 
-zero-from = (value, thres) ->
-    sat((thres - value)/thres)
+easeOut = (context) ->
+    { is-higher, is-lower } = context
+    wn = context['when']
+    if is-higher? and wn?
+        return sat((is-higher - wn)/is-higher)
+
+    if is-lower? and wn?
+        v = sat((wn - is-lower)/is-lower)
+        return v
+
+window.dyn-css = {}
+
+window.dynCss.lib = {
+    easeOut: easeOut
+}
+
+create-function = (body) ->
+    body = body.replace(/@/g,'this.lib.')
+    script = document.createElement("script");
+    script.text = "window.tmp = function() { return (#body); }.bind(window.dynCss);"
+    document.head.appendChild( script ).parentNode.removeChild( script );
+    return window.tmp
 
 build-handlers = (rules, sheet) ->
    for rule in rules 
@@ -51,28 +70,18 @@ build-handlers = (rules, sheet) ->
         for decl in rule.declarations 
             result = get-scroll-expression(decl)
             if result?
-                { property, expression , trigger} = result 
-                handler = mathjs.compile(expression)
+                { property, expression, trigger} = result 
                 { ref, index } = add-css-rule sheet, sel, ""
-                # console.log "Setting up handler for #sel - #property = #expression"
+                handler = create-function expression
                 wrapper = (next) ->
-                            let i = index, fun = handler, pro = _.str.camelize(property), s = sel
-                                (e) -> 
-                                    el = e.target
-                                    scope = { 
-                                        windowTop: $(el).scrollTop()
-                                        windowLeft: $(el).scrollLeft()
-                                        zero-from: zero-from
-                                        }
-                                    get-css-rules(sheet)[i].style[pro] = fun.eval(scope)
-                                    next(e) if next?
+                    let i = index, fun = handler, pro = _.str.camelize(property), s = sel
+                        (e) -> 
+                            el = e.target
+                            window.dynCss.lib['top'] = $(el).scrollTop()
+                            get-css-rules(sheet)[i].style[pro] = fun()
+                            next(e) if next?
+                window.onscroll = wrapper(window.onscroll)
 
-
-                if trigger == \body or trigger == \html or trigger == \document or trigger == \window
-                    window.onscroll = wrapper(window.onscroll)
-                else 
-                    $(trigger).each (i, e) ->
-                        e.addEventListener 'scroll', wrapper()
 
 
 $('link[type="text/css"]').each (i,n) ->

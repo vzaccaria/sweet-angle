@@ -30,7 +30,7 @@ body {
 	box-sizing: border-box;
 	.rounded(3px);
 	background-color: fade(white, 90%);
-	-dyn-opacity: on-scroll-of 'window' execute 'zeroFrom(windowTop, 100)';
+	-dyn-opacity: on-scroll '@easeOut({when: @top, isHigher: 150})';
 	padding: 2em;
 }
 
