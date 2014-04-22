@@ -38,8 +38,11 @@ html(class="no-js")
                 ## Usage 
 
                 ```
-                $ sweet-angle directive.sa > directive.js
+                $ sweet-angle directive.sa -a application > directive.js
                 ```
+
+                where `-a` is used to pass the name of the application for which
+                you want to generate the directive.
 
                 ## The syntax
 
@@ -60,7 +63,7 @@ html(class="no-js")
 
 
                 ```
-                directive progressBar for application {
+                directive progressBar {
                  import                 /* none */;
                  byref    value;        /* two-way angularjs bind */
                  byval    color, max;   /* one-way angularjs bind */
@@ -129,7 +132,7 @@ html(class="no-js")
                      } else {
                       @visibility = 'hidden';
                      }
-                   }
+                   }.bind(this)
                    ...
                 ```
 
@@ -142,7 +145,7 @@ html(class="no-js")
                      var perc;
                      perc = @value/parseFloat(@max)*window.jQuery(@elem).width();
                      @bsize = "width: "+perc+"px;"
-                   }
+                   }.bind(this)
                 ```
 
                 and, second, we register the event listener on any change to `value`.

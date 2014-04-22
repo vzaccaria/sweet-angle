@@ -49,6 +49,7 @@ macro @ {
 	case { _ . $x } => { return #{ this.$x }; }
 	case { _ ; } => { return #{ this; }; } 
 	case { _ $x } => { return #{ this.$x }; }
+	case { _ } => { return #{ this }; }
 }
 
 let sweetInit = macro {
