@@ -1,0 +1,40 @@
+
+directive progressBar {
+	import 	 /* none */;
+	byref    value;
+	byval    color, max;
+	callback /* node */; 
+
+	template `
+div 
+  link(rel="stylesheet", type="text/css", href="//cdnjs.cloudflare.com/ajax/libs/semantic-ui/0.13.0/css/semantic.css")
+  .ui.progress.transition.active(ng-class='[visibility, color]')
+      .bar(style='{{bsize}}')
+`;
+
+	create(elem, attr) {
+		@visibility = 'hidden';
+
+		@elem = elem;
+
+		@toggle = function() { 
+
+			if(@visibility === 'hidden') {
+				@visibility = '';
+			} else {
+				@visibility = 'hidden';
+			}
+			@onValueChange();
+		}.bind(@);
+
+		@onValueChange = function() { 
+			var perc;
+			perc = @value/parseFloat(@max)*window.jQuery(@elem).width();
+			@bsize = "width: "+perc+"px;"
+		}.bind(@);
+
+		@$watch('value', @onValueChange);
+
+	}
+
+};
