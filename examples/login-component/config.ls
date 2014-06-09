@@ -3,8 +3,8 @@ _module = ->
           
     iface = { 
 
+      # main properties 
       destination:'_site'
-      
       remote:'simple-login'
 
       vendor-js:
@@ -12,9 +12,12 @@ _module = ->
           "./bower_components/jquery/dist/jquery.js"
           ...
 
+      # client files 
       client-ls:
           "./assets/js/*.ls"
           ...
+
+      client-brfy-roots: [ 'entry.js' ]
 
       client-html:
           "./assets/*.jade"
@@ -25,23 +28,27 @@ _module = ->
           './assets/less/*.less'
           ...
 
+      directives:[
+          './assets/directives/*.sjs'
+          ]
+
+      # vendor files 
       vendor-css:
           './vendor/css/*.css'
           ...
 
+      # other assets
       font-dir:'./assets/fonts'
 
       img-dir:'./assets/img'
-
-      directives:[
-          './assets/directives/*.sjs'
-          ]
 
       data-to-be-copied:[
           "./data/*.json"
           "./assets/less/*.dss"
           ]
 
+
+      other-deps: []
 
     }
   

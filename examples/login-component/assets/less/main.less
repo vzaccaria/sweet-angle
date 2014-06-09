@@ -19,18 +19,19 @@
 	font-size: 1.3em;
 }
 
-body {
-	background-color: red;
-	height: 2000px;
-}
+
 
 .form {
 	width: 40%;
-	min-width: 20em;
+	width: 20em;
 	box-sizing: border-box;
 	.rounded(3px);
-	background-color: fade(white, 90%);
-	-dyn-opacity: on-scroll '@easeOut({when: @top, isHigher: 150})';
+	background-color: white;
+	.drop-shadow(@blur: 10px, @alpha: 0.3);
+	-dyn-webkit-transform:   '"translate( 0px , #{-1*@w-scrollTop}px) "';
+	-dyn-margin-top: 		 '(@w-height - @i-height)/2.0';
+	-dyn-margin-left: 		 '(@w-width -  @i-width)/2.0';
+	-dyn-opacity: 	 		 '@easeOut({when: @w-scrollTop, isHigherThan: 350})';
 	padding: 2em;
 }
 
@@ -80,7 +81,40 @@ body {
 	color: white;
 }
 
-body {
-	// -dyn-background-color: on-scroll-of 'window' execute '"black"';
+.call-to-action {
+	position: absolute;
+	-dyn-top: '@w-height';
+	background-color: white;
+	width: 100%;
+	margin-left: 0;
+	margin-right: 0;
+
 }
 
+.call-to-action__header {
+	width: 40%;
+	text-align: center;
+	margin-left: auto;
+	margin-right: auto;
+	padding: 1em;
+	font-size: 2em;
+	font-family: Lato, Helvetica;
+}
+
+body {
+	-dyn-height:  '@w-height';
+	background: url(../img/background.jpg) no-repeat center center;
+    background-size: cover;
+    margin: 0px;
+}
+
+.overlay {
+  opacity:    0.5; 
+  background: #000; 
+  width:      100%;
+  height:     100%; 
+  z-index:    -1;
+  top:        0; 
+  left:       0; 
+  position:   fixed; 
+}

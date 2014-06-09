@@ -1,9 +1,11 @@
 
-{ client-html, client-less, client-ls, directives } = require('./config')
+{ client-html, client-less, client-ls, client-brfy-roots, directives, other-deps } = require('./config')
 { vendor-js, vendor-css, , data-to-be-copied }      = require('./config')
 { remote, destination, font-dir, img-dir }          = require('./config')
  
-client-js = client-ls
+client-js = [ "#destination/js/build/#s" for s in client-brfy-roots ]
+
+files-to-watch = client-ls ++ client-less ++ client-html ++ directives ++ other-deps
 
 force-file-reload = [
     "#destination/**/*.html"
@@ -66,12 +68,11 @@ gulp.task 'build-index', ['build-html'] ->
     gulp.src "#destination/html/index.html"
         .pipe gulp.dest "#destination"
 
-gulp.task 'build-client-js', ->
+gulp.task 'build-client-js', ['build-client-ls'], ->
     gulp.src client-js, { read: false }
         .pipe plumber()
         .pipe browserify {
-            transform:  ['liveify'],
-            extensions: ['.ls']
+            insertGlobals : false
         }
         .pipe concat('client.js')
         .pipe gulp.dest "#destination/js"
@@ -160,7 +161,7 @@ gulp.task 'watch-build', ->
   startExpress();
   startLivereload();
   gulp.watch(force-file-reload, notifyLivereload);
-  files-to-watch = client-ls ++ client-less ++ client-html ++ directives
+  files-to-watch = client-ls ++ client-less ++ client-html ++ directives ++ other-deps
   gulp.watch(files-to-watch, ["default"])
 
 

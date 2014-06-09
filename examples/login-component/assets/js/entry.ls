@@ -1,8 +1,14 @@
 
 css-parse = require('css-parse')
 
+window.dynCss = {}
+window.dynCss.lib = require('./lib')
+
+
 scroll-handlers = {}
 sheets          = []
+
+allow-element-selectors = true 
 
 # From http://davidwalsh.name/add-rules-stylesheets
 
@@ -31,67 +37,74 @@ add-css-rule = (sheet, selector, rules, index) ->
 get-scroll-expression = (d) ->
     if (results = d.property is /\-dyn\-(.*)/)?
         property = results[1]
-        if (results = d.value is /on\-scroll '(.*)'/)?
+        if (results = d.value is /'(.*)'/)?
             return { property: property, expression: results[1] }
     return undefined
 
-sat = (x) ->
-    | x>1 => 1
-    | x<0 => 0
-    | otherwise => x 
-
-easeOut = (context) ->
-    { is-higher, is-lower } = context
-    wn = context['when']
-    if is-higher? and wn?
-        return sat((is-higher - wn)/is-higher)
-
-    if is-lower? and wn?
-        v = sat((wn - is-lower)/is-lower)
-        return v
-
-window.dyn-css = {}
-
-window.dynCss.lib = {
-    easeOut: easeOut
-}
-
 create-function = (body) ->
-    body = body.replace(/@/g,'this.lib.')
-    script = document.createElement("script");
+
+    body   = body.replace(/\#{(.+)}/g, '"+($1)+"')
+    body   = body.replace(/\#(\w+)/g, '"+($1)+"')
+    body   = body.replace(/@i-(\w+)/g,'parseInt(this.el.css(\'$1\'))')
+    body   = body.replace(/@w-(\w+)/g,'(this.lib.wRef.$1())')
+    body   = body.replace(/@/g,'this.lib.')
+    
+    script = document.createElement("script")
+    console.log body
     script.text = "window.tmp = function() { return (#body); }.bind(window.dynCss);"
     document.head.appendChild( script ).parentNode.removeChild( script );
     return window.tmp
 
+
+wRef = $(window)
+
+update-scope = ->
+        window.dynCss.lib.wRef = wRef 
+
+refresh-handler = undefined
+
 build-handlers = (rules, sheet) ->
-   for rule in rules 
+  for rule in rules 
     if rule.type is "rule"
         sel = rule.selectors
+
         for decl in rule.declarations 
             result = get-scroll-expression(decl)
+
             if result?
                 { property, expression, trigger} = result 
                 { ref, index } = add-css-rule sheet, sel, ""
                 handler = create-function expression
+
                 wrapper = (next) ->
+                    wRef = $(window)
                     let i = index, fun = handler, pro = _.str.camelize(property), s = sel
                         (e) -> 
-                            el = e.target
-                            window.dynCss.lib['top'] = $(el).scrollTop()
-                            get-css-rules(sheet)[i].style[pro] = fun()
-                            next(e) if next?
-                window.onscroll = wrapper(window.onscroll)
+                            update-scope()
 
+                            for sct in s 
+                                $(sct).each (i) ->
+                                    window.dynCss.el = $(this)
+                                    val = fun()
+                                    $(this).css(pro, val)
+
+                            next(e) if next?
+
+                refresh-handler := wrapper(refresh-handler)                
+
+ 
 
 
 $('link[type="text/css"]').each (i,n) ->
     if n.href?
         $.get n.href, ->
             sheet = create-sheet()
-            window.custom-sheet = sheet
             sheets.push(sheet)
             rules = css-parse(it).stylesheet.rules
             build-handlers(rules, sheet)
- 
-window.scroll-handlers = scroll-handlers
-window.create-sheet = create-sheet
+            window.onscroll = refresh-handler
+            window.onresize = refresh-handler 
+            refresh-handler()
+
+
+

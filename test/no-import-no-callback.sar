@@ -1,14 +1,13 @@
-angular.module('application').directive('progressBar', function () {
-    console.log(arguments);
-    var ret = {};
-    ret.restrict = 'A';
-    ret.template = '<div><link rel="stylesheet" type="text/css" href="//cdnjs.cloudflare.com/ajax/libs/semantic-ui/0.13.0/css/semantic.css"/><div ng-class="[visibility, color]" class="ui progress transition active"><div style="{{bsize}}" class="bar"></div></div></div>';
-    ret.replace = true;
-    ret.scope = {};
-    ret.scope.value = '=';
-    ret.scope.color = '@';
-    ret.scope.max = '@';
-    ret.link = function (s) {
+var ret = {};
+ret.restrict = 'A';
+ret.template = '<div><link rel="stylesheet" type="text/css" href="//cdnjs.cloudflare.com/ajax/libs/semantic-ui/0.13.0/css/semantic.css"/><div ng-class="[visibility, color]" class="ui progress transition active"><div style="{{bsize}}" class="bar"></div></div></div>';
+ret.replace = true;
+ret.scope = {};
+ret.scope.value = '=';
+ret.scope.color = '@';
+ret.scope.max = '@';
+ret.buildDirective = function () {
+    window.sweetAngle['progressBar'].link = function (s) {
         (function (elem, attr) {
             this.visibility = 'hidden';
             this.elem = elem;
@@ -28,5 +27,6 @@ angular.module('application').directive('progressBar', function () {
             this.$watch('value', this.onValueChange);
         }.apply(s, Array.prototype.slice.call(arguments, 1)));
     };
-    return ret;
-});
+    return window.sweetAngle['progressBar'];
+};
+window.sweetAngle['progressBar'] = ret;

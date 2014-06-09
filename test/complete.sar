@@ -1,21 +1,48 @@
-angular.module('application').directive('xy', function (a, b) {
-    console.log(arguments);
-    var ret = {};
-    ret.restrict = 'A';
-    ret.template = '<div></div>';
-    ret.replace = true;
-    ret.scope = {};
-    ret.scope.c = '=';
-    ret.scope.d = '=';
-    ret.scope.e = '@';
-    ret.scope.f = '@';
-    ret.scope.g = '&';
-    ret.scope.h = '&';
-    ret.link = function (s) {
+var ret = {};
+ret.restrict = 'A';
+ret.template = '<div></div>';
+ret.replace = true;
+ret.scope = {};
+ret.scope.c = '=';
+ret.scope.d = '=';
+ret.scope.e = '@';
+ret.scope.f = '@';
+ret.scope.g = '&';
+ret.scope.h = '&';
+ret.buildDirective = function (a, b) {
+    window.sweetAngle['xy'].link = function (s) {
         s.a = a;
         s.b = b;
         (function (e, a$2) {
         }.apply(s, Array.prototype.slice.call(arguments, 1)));
     };
-    return ret;
-});
+    return window.sweetAngle['xy'];
+};
+window.sweetAngle['xy'] = ret;
+var ret$2 = {};
+ret$2.restrict = 'A';
+ret$2.template = '<span><div></div></span>';
+ret$2.replace = true;
+ret$2.scope = {};
+var scopeKeys = Object.keys(window.sweetAngle['xy'].scope);
+for (var i = 0; i < scopeKeys.length; i++) {
+    if (typeof window.sweetAngle['xy'].scope[scopeKeys[i]] == 'string') {
+        ret$2.scope[scopeKeys[i]] = window.sweetAngle['xy'].scope[scopeKeys[i]];
+    }
+}
+;
+ret$2.scope.k = '=';
+ret$2.scope.u = '=';
+ret$2.scope.j = '@';
+ret$2.scope.h = '&';
+ret$2.buildDirective = function () {
+    window.sweetAngle['za'].link = function (s, elem, param) {
+        window.sweetAngle['xy'].link(s, elem, param);
+        (function (z, u) {
+        }.apply(s, Array.prototype.slice.call(arguments, 1)));
+    };
+    return window.sweetAngle['za'];
+};
+window.sweetAngle['za'] = ret$2;
+angular.module('application').directive('xy', window.sweetAngle['xy'].buildDirective);
+angular.module('application').directive('za', window.sweetAngle['za'].buildDirective);

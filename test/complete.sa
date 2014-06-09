@@ -8,5 +8,17 @@ directive xy {
 	template `div`;
 
 	create(e,a) { }
-};
+}
 
+extend xy into za {
+    import;
+    byref k,u;
+    byval j;
+    callback h;
+    template `
+span!=parent`;
+    create(z,u) { }
+}
+
+commitDirective xy;
+commitDirective za;
