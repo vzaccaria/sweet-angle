@@ -1,6 +1,6 @@
 {
   "name": "sweet-angle",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "description": "Write angularjs directives with ease",
   "main": "index.js",
   "bin": {
